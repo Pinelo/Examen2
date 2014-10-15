@@ -126,7 +126,7 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         tiempoActual = System.currentTimeMillis();
         while (vidas >= 0) {
             checaColision();
-            if(!pausa) {
+            if(!pausa && !instruc) {
             actualiza();
             }
             repaint();
@@ -175,7 +175,17 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         }
         //se cambia el estado de pausa al presionar p
         else if(e.getKeyCode() == KeyEvent.VK_P) {
-            pausa = !pausa;
+            //no se peude poner pausa si ya estan las instrucciones
+            if(!instruc) {
+                pausa = !pausa;
+            }
+        }
+        //se despliegan las instrucciones si se presiona la tecla I
+        else if(e.getKeyCode() == KeyEvent.VK_I) {
+            //no se pueden ver las instrucciones en pausa
+            if(!pausa) {
+                instruc = !instruc;
+            }
         }
     }
 
@@ -219,6 +229,9 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         
         if(canasta.getPosX() <= getWidth()/2) {
             canasta.setPosX(getWidth()/2);
+        }
+        else if(canasta.getPosX()+canasta.getAncho() > getWidth()) {
+            canasta.setPosX(getWidth() - canasta.getAncho());
         }
 
     }
@@ -289,13 +302,9 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
      * @param g objeto grafico
      */
     public void paint1(Graphics g) {
-        //se escribe "PAUSA" si esta pausado el juego
-        if(pausa) {
-           // g.setColor(Color.RED);
-            g.drawString("PAUSA", getWidth()/2, getHeight()/2);
-        }
-        g.drawImage(background, 0, 0, this);
-        if (balon.getAnimacion() != null) {
+        if(instruc == false && vidas >0) {
+            g.drawImage(background, 0, 0, this);
+            if (balon.getAnimacion() != null) {
             g.drawImage(balon.animacion.getImagen(), balon.getPosX(), balon.getPosY(), this);
         }
         if (canasta.getAnimacion() != null) {
@@ -309,6 +318,15 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         g.setColor(Color.red);
         g.drawString("" + lives, 754, 99);
         g.drawString("" + fouls, 756, 178);
+        }
+        else if(vidas <= 0) {
+            g.drawImage(gg, 0, 0, this);
+            g.setColor(Color.white);
+            g.drawString("Presiona N para empezar de nuevo", 50, 50);
+        }
+        else {
+            g.drawImage(ins, 0, 0, this);
+        }
 
     }
 
