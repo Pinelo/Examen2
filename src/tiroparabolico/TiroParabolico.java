@@ -19,7 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 
-public class TiroParabolico extends JFrame implements Runnable, MouseListener, KeyListener {
+public class TiroParabolico extends JFrame implements Runnable, MouseListener, 
+        KeyListener {
 
     private Animacion animBalon; // Animacion del balon
     private Animacion cuadroCanasta; // Animacion de la canasta
@@ -80,18 +81,28 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         grav = 1;
         vidas = 14;
         datos = "";
-        background = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/nba.jpg"));
-        ins = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/ins.jpg"));
-        gg = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/gg.jpg"));
+        background = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/nba.jpg"));
+        ins = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/ins.jpg"));
+        gg = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/gg.jpg"));
 
         // Carga las imagenes de la animacion del balon
-        Image b0 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/b0.png"));
-        Image b1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/b1.png"));
-        Image b2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/b2.png"));
-        Image b3 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/b3.png"));
-        Image b4 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/b4.png"));
-        Image b5 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/b5.png"));
-        Image c = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("images/canasta.png"));
+        Image b0 = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/b0.png"));
+        Image b1 = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/b1.png"));
+        Image b2 = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/b2.png"));
+        Image b3 = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/b3.png"));
+        Image b4 = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/b4.png"));
+        Image b5 = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/b5.png"));
+        Image c = Toolkit.getDefaultToolkit().getImage(
+                this.getClass().getResource("images/canasta.png"));
 
         // Se crea la animacion del balon
         animBalon = new Animacion();
@@ -133,7 +144,8 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
 
         // Guarda el tiempo actual del sistema
         tiempoActual = System.currentTimeMillis();
-        while (vidas >= 0) {
+        
+        while (vidas > 0) {
             checaColision();
             if(!pausa && !instruc) {
             actualiza();
@@ -156,7 +168,7 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
     */
     public void grabaArchivo() throws IOException {
                                                           
-                PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
+          PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
                 //se graban todas las variables
                     fileOut.println(click);
                     fileOut.println(vidas);
@@ -168,7 +180,6 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
                     fileOut.println(grav);
                     fileOut.println(canasta.getPosX());
                     fileOut.println(canasta.getPosY());
-                    fileOut.println(dirCanasta);
                     fileOut.println(iVelocidad);
                     fileOut.println(balon.getPosX());
                     fileOut.println(balon.getPosY());
@@ -203,8 +214,6 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
                 canasta.setPosX(Integer.valueOf(dato));
                 dato = fileIn.readLine();
                 canasta.setPosY(Integer.valueOf(dato));
-                dato = fileIn.readLine();
-                dirCanasta = Integer.valueOf(dato);
                 dato = fileIn.readLine();
                 iVelocidad = Integer.valueOf(dato);
                 dato = fileIn.readLine();
@@ -283,6 +292,17 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
             
         }
     }
+    
+    
+    public void keyReleased(KeyEvent e) {
+        //la canasta se deja de mover cuando se depresiona la tecla
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            dirCanasta = 0;
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            dirCanasta = 0;
+        }
+    }
 
     /**
      * Este metodo se encarga de cambiar las posiciones de lso objetos balon y
@@ -291,7 +311,8 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
     public void checaColision() {
 
         // BALON VS JFRAME
-        Rectangle cuadro = new Rectangle(0, 0, this.getWidth(), this.getHeight());
+        Rectangle cuadro = new Rectangle(0, 0, this.getWidth(), 
+                this.getHeight());
         if (!cuadro.intersects(balon.getPerimetro())) {
             bVelx = 0;
             bVely = 0;
@@ -400,10 +421,12 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         if(instruc == false && vidas >0) {
             g.drawImage(background, 0, 0, this);
             if (balon.getAnimacion() != null) {
-            g.drawImage(balon.animacion.getImagen(), balon.getPosX(), balon.getPosY(), this);
+            g.drawImage(balon.animacion.getImagen(), balon.getPosX(), 
+                    balon.getPosY(), this);
         }
         if (canasta.getAnimacion() != null) {
-            g.drawImage(canasta.animacion.getImagen(), canasta.getPosX(), canasta.getPosY(), this);
+            g.drawImage(canasta.animacion.getImagen(), canasta.getPosX(),
+                    canasta.getPosY(), this);
         }
         //despliega 'P' en el tablero si esta en pausa
         if(pausa) {
@@ -437,12 +460,8 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
 
     @Override
     public void keyTyped(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
 }
