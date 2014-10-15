@@ -126,7 +126,9 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         tiempoActual = System.currentTimeMillis();
         while (vidas >= 0) {
             checaColision();
+            if(!pausa) {
             actualiza();
+            }
             repaint();
             try {
                 Thread.sleep(50);
@@ -163,11 +165,17 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
     }
     
     public void keyPressed(KeyEvent e) {
+        //Si se presiona la flecha derecha dirCanasta = 1
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             dirCanasta = 1;
         }
+        //si se presiona la flecha de la izquierda, dirCanasta = 2
         else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             dirCanasta = 2;
+        }
+        //se cambia el estado de pausa al presionar p
+        else if(e.getKeyCode() == KeyEvent.VK_P) {
+            pausa = !pausa;
         }
     }
 
@@ -281,6 +289,11 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
      * @param g objeto grafico
      */
     public void paint1(Graphics g) {
+        //se escribe "PAUSA" si esta pausado el juego
+        if(pausa) {
+           // g.setColor(Color.RED);
+            g.drawString("PAUSA", getWidth()/2, getHeight()/2);
+        }
         g.drawImage(background, 0, 0, this);
         if (balon.getAnimacion() != null) {
             g.drawImage(balon.animacion.getImagen(), balon.getPosX(), balon.getPosY(), this);
