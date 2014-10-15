@@ -1,16 +1,18 @@
 package tiroparabolico;
 
 import java.awt.Color;
-import javax.swing.JFrame;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.Font;
+import javax.swing.JFrame;
 
-public class TiroParabolico extends JFrame implements Runnable, MouseListener {
+public class TiroParabolico extends JFrame implements Runnable, MouseListener, KeyListener {
 
     private Animacion animBalon; // Animacion del balon
     private Animacion cuadroCanasta; // Animacion de la canasta
@@ -29,6 +31,8 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener {
     private int grav; // Gravedad
     private int vidas; // Vidas del usuario
     private int score; // Score del usuario
+    private int dirCanasta; //Determina direccion para canasta
+    private int iVelocidad; //Velocidad de la canasta
     private boolean click; // Booleano de click
     private boolean pausa; // Booleano de pausa
     private boolean instruc; // Booleano para desplegar instrucciones
@@ -57,6 +61,8 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener {
         setSize(1008, 758);
         click = false;
         setTitle("NBA Series!");
+        dirCanasta = 0;     //La canasta no se mueve al principio
+        iVelocidad = 8;     //Determina la velocidad de la canasta
         score = 0;
         lives = 5;
         fouls = 3;
@@ -103,6 +109,8 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener {
         over = new SoundClip("sounds/buzzer_x.wav");
 
         addMouseListener(this);
+        //se agrega keylistener para poder detectar el teclado
+        addKeyListener(this);
         Thread th = new Thread(this);
         th.start();
     }
@@ -145,6 +153,22 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener {
             tiempoActual += tiempoTranscurrido;
             balon.getAnimacion().actualiza(tiempoTranscurrido);
         }
+        
+        if(dirCanasta == 1) {
+            canasta.setPosX(canasta.getPosX() + iVelocidad);
+        }
+        else if(dirCanasta == 2) {
+            canasta.setPosX(canasta.getPosX() - iVelocidad );
+        }
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            dirCanasta = 1;
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            dirCanasta = 2;
+        }
     }
 
     /**
@@ -183,6 +207,10 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener {
             if (!mute) {
                 goal.play();
             }
+        }
+        
+        if(canasta.getPosX() <= getWidth()/2) {
+            canasta.setPosX(getWidth()/2);
         }
 
     }
@@ -274,6 +302,16 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener {
     public static void main(String[] args) {
         TiroParabolico tiro = new TiroParabolico();
         tiro.setVisible(true);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
