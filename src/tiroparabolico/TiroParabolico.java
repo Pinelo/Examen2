@@ -10,6 +10,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class TiroParabolico extends JFrame implements Runnable, MouseListener, KeyListener {
@@ -47,12 +54,14 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
     private SoundClip over;
     private String datos;
     private String[] arr; // Arreglo de datos
+    private String nombreArchivo;   //nomrbe de archivo donde se guardan las cosas
 
     /**
      * Constructor Se inicializan las variables
      */
     public TiroParabolico() {
         myFont = new Font("Serif", Font.BOLD, 30); // Estilo de fuente
+        nombreArchivo = "datosJuego";
         pausa = false;
         mute = false;
         gameover = false;
@@ -141,6 +150,71 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
             repaint();
         }
     }
+    
+    /*
+        En este metodo se graba las variables del jeugo
+    */
+    public void grabaArchivo() throws IOException {
+                                                          
+                PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
+                //se graban todas las variables
+                    fileOut.println(click);
+                    fileOut.println(vidas);
+                    fileOut.println(score);
+                    fileOut.println(lives);
+                    fileOut.println(fouls);
+                    fileOut.println(bVelx);
+                    fileOut.println(bVely);
+                    fileOut.println(grav);
+                    fileOut.println(canasta.getPosX());
+                    fileOut.println(canasta.getPosY());
+                    fileOut.println(dirCanasta);
+                    fileOut.println(iVelocidad);
+                    fileOut.println(balon.getPosX());
+                    fileOut.println(balon.getPosY());
+                fileOut.close();
+        }
+    /*
+        En este metodo se leen las variables grabadas
+    */
+    
+    public void leeArchivo() throws IOException {
+                                                          
+                BufferedReader fileIn;
+                fileIn = new BufferedReader(new FileReader(nombreArchivo));
+                String dato = fileIn.readLine();
+                //empieza a leer las variables
+                click = Boolean.valueOf(dato);
+                dato = fileIn.readLine();
+                vidas = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                score = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                lives = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                fouls = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                bVelx = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                bVely = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                grav = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                canasta.setPosX(Integer.valueOf(dato));
+                dato = fileIn.readLine();
+                canasta.setPosY(Integer.valueOf(dato));
+                dato = fileIn.readLine();
+                dirCanasta = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                iVelocidad = Integer.valueOf(dato);
+                dato = fileIn.readLine();
+                balon.setPosX(Integer.valueOf(dato));
+                dato = fileIn.readLine();
+                balon.setPosX(Integer.valueOf(dato));
+                            
+             fileIn.close();
+        }
+
 
     /**
      * En este metodo se actualiza las posiciones del balon y de la canasta.
@@ -186,6 +260,27 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
             if(!pausa) {
                 instruc = !instruc;
             }
+        }
+        //se guarda el juego al presionar 'g'
+        else if(e.getKeyCode() == KeyEvent.VK_G) {
+            if(!pausa && !instruc) {
+                 try {
+                     grabaArchivo();
+                 } catch (IOException ex) {
+                     
+                 }
+            }
+        }
+        // se cargra el juego grabado
+        else if(e.getKeyCode() == KeyEvent.VK_C) {
+            if(!pausa && !instruc) {
+                try {
+                    leeArchivo();
+                } catch (IOException ex) {
+
+                }
+            }
+            
         }
     }
 
@@ -321,8 +416,6 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         }
         else if(vidas <= 0) {
             g.drawImage(gg, 0, 0, this);
-            g.setColor(Color.white);
-            g.drawString("Presiona N para empezar de nuevo", 50, 50);
         }
         else {
             g.drawImage(ins, 0, 0, this);
