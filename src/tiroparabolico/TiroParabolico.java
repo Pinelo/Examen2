@@ -210,7 +210,7 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
                 dato = fileIn.readLine();
                 balon.setPosX(Integer.valueOf(dato));
                 dato = fileIn.readLine();
-                balon.setPosX(Integer.valueOf(dato));
+                balon.setPosY(Integer.valueOf(dato));
                             
              fileIn.close();
         }
@@ -396,7 +396,7 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
      *
      * @param g objeto grafico
      */
-    public void paint1(Graphics g) {
+    public void paint1(Graphics g) {//943 175, 22
         if(instruc == false && vidas >0) {
             g.drawImage(background, 0, 0, this);
             if (balon.getAnimacion() != null) {
@@ -404,6 +404,13 @@ public class TiroParabolico extends JFrame implements Runnable, MouseListener, K
         }
         if (canasta.getAnimacion() != null) {
             g.drawImage(canasta.animacion.getImagen(), canasta.getPosX(), canasta.getPosY(), this);
+        }
+        //despliega 'P' en el tablero si esta en pausa
+        if(pausa) {
+            int iFontSize = 22;
+            g.setFont(new Font("Arial", Font.PLAIN,  iFontSize));
+            g.setColor(Color.RED);
+            g.drawString("P", 943,175);
         }
 
         //-----IMPRESION DEL TABLERO
